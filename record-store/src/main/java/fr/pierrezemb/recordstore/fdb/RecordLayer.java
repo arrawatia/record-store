@@ -83,6 +83,7 @@ public class RecordLayer {
   private final SecretKey defaultKey;
 
   public RecordLayer(String clusterFilePath, boolean enableMetrics, SecretKey key) throws InterruptedException, ExecutionException, TimeoutException {
+   System.getenv().forEach( (k,v) -> System.out.println(k + "=" +v));
     db = FDBDatabaseFactory.instance().getDatabase(clusterFilePath);
     db.performNoOpAsync().get(2, TimeUnit.SECONDS);
     System.out.println("connected to FDB!");

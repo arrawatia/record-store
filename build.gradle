@@ -6,6 +6,9 @@ allprojects {
   apply plugin: 'com.github.hierynomus.license'
   repositories {
     mavenCentral()
+    maven {
+      url "https://ossartifacts.jfrog.io/artifactory/fdb-record-layer/"
+    }
   }
   license {
     header rootProject.file('HEADER')
@@ -14,7 +17,7 @@ allprojects {
 }
 ext {
   vertxVersion = '3.9.3'
-  recordLayerVersion = '2.8.110.0'
+  recordLayerVersion = '3.3.396.0'
   junitJupiterEngineVersion = '5.4.0'
   autoValueVersion = '1.7.2'
 }

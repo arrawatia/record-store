@@ -40,7 +40,7 @@ public class GrpcVerticle extends AbstractVerticle {
 
   @Override
   public void start(Promise<Void> startPromise) throws Exception {
-
+    System.out.println(this.context.config());
     String clusterFilePath = this.context.config().getString(Constants.CONFIG_FDB_CLUSTER_FILE, Constants.CONFIG_FDB_CLUSTER_FILE_DEFAULT);
     System.out.println("connecting to fdb@" + clusterFilePath);
 

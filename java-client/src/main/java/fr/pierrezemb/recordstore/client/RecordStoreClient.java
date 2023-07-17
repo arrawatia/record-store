@@ -58,7 +58,7 @@ public class RecordStoreClient {
     asyncRecordStub = RecordServiceGrpc.newFutureStub(channel).withCallCredentials(credentials);
     asyncAdminStub = AdminServiceGrpc.newFutureStub(channel).withCallCredentials(credentials);
 
-    this.ping().get(1, TimeUnit.SECONDS);
+    this.ping().get(5, TimeUnit.SECONDS);
   }
 
   /**
@@ -72,6 +72,10 @@ public class RecordStoreClient {
 
   public ListenableFuture<RecordStoreProtocol.EmptyResponse> upsertSchema(RecordStoreProtocol.UpsertSchemaRequest request) {
     return this.asyncSchemaStub.upsert(request);
+  }
+
+  public ListenableFuture<RecordStoreProtocol.GetSchemaResponse> getSchema(RecordStoreProtocol.GetSchemaRequest request) {
+    return this.asyncSchemaStub.get(request);
   }
 
   public ListenableFuture<RecordStoreProtocol.EmptyResponse> putRecord(Message record) {

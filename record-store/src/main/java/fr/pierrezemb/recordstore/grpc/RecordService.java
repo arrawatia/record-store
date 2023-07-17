@@ -50,6 +50,7 @@ public class RecordService extends RecordServiceGrpc.RecordServiceImplBase {
     } catch (InvalidProtocolBufferException e) {
       throw new StatusRuntimeException(Status.INVALID_ARGUMENT.withDescription("could not parse Protobuf: " + e.getMessage()));
     } catch (RuntimeException e) {
+      e.printStackTrace();
       log.error(e.getMessage());
       throw new StatusRuntimeException(Status.INTERNAL.withDescription(e.getMessage()));
     }

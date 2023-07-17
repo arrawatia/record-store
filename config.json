@@ -3,5 +3,5 @@
   "listen-address": "0.0.0.0",
   "grpc-listen-port": 8080,
   "graphql-listen-port": 8081,
-  "load-demo": "persons"
+  "load-demo": "user"
 }

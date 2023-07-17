@@ -16,7 +16,6 @@
 package fr.pierrezemb.recordstore.client;
 
 import fr.pierrezemb.recordstore.proto.RecordStoreProtocol;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 
@@ -24,7 +23,7 @@ public class RecordField {
   @Nonnull
   private final String fieldName;
 
-  public RecordField(@NotNull String fieldName) {
+  public RecordField(String fieldName) {
     this.fieldName = fieldName;
   }
 

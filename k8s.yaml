@@ -1,0 +1,87 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fdb-record-store-conf
+data:
+  config.json: |
+    {
+    "fdb-cluster-file": "/var/dynamic-conf/fdb.cluster",
+    "listen-address": "0.0.0.0",
+    "grpc-listen-port": 8080,
+    "graphql-listen-port": 8081
+    }
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fdb-record-store
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fdb-record-store
+  template:
+    metadata:
+      labels:
+        app: fdb-record-store
+    spec:
+      containers:
+        - image: arrawatia/record-store:1.0.0-SNAPSHOT-1
+          imagePullPolicy: IfNotPresent
+          name: fdb-record-store
+          env:
+            - name: FDB_CLUSTER_FILE
+              value: /var/dynamic-conf/fdb.cluster
+            - name: FDB_NETWORK_OPTION_TRACE_LOG_GROUP
+              value: fdb-data-loader
+            - name: FDB_NETWORK_OPTION_EXTERNAL_CLIENT_DIRECTORY
+              value: /var/dynamic-conf/lib/multiversion
+            - name: LD_LIBRARY_PATH
+              value: /var/dynamic-conf/lib
+          volumeMounts:
+            - name: dynamic-conf
+              mountPath: /var/dynamic-conf
+            - name: fdb-record-store-conf
+              mountPath: /var/config
+      initContainers:
+        - name: foundationdb-kubernetes-init
+          image: foundationdb/foundationdb-kubernetes-sidecar:7.1.26-1
+          args:
+            - "--copy-file"
+            - "fdb.cluster"
+            - "--copy-library"
+            - "7.1"
+            - "--init-mode"
+            - "--require-not-empty"
+            - "fdb.cluster"
+          volumeMounts:
+            - name: config-map
+              mountPath: /var/input-files
+            - name: dynamic-conf
+              mountPath: /var/output-files
+      volumes:
+        - name: config-map
+          configMap:
+            name: test-cluster-config
+            items:
+              - key: cluster-file
+                path: fdb.cluster
+        - name: fdb-record-store-conf
+          configMap:
+            name: fdb-record-store-conf
+        - name: dynamic-conf
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fdb-record-store
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: fdb-record-store
